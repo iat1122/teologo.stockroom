@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stockroom</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <h1>Stockroom</h1>
+      <p>Know what's on the shelf and what's about to run out.</p>
+    </div>
+    <button class="btn btn-primary" id="addBtn" type="button">Add item</button>
+  </header>
+
+  <main class="page">
+    <section class="summary" aria-label="Inventory summary">
+      <div class="figure">
+        <span class="figure-value" id="statItems">0</span>
+        <span class="figure-label">Products</span>
+      </div>
+      <div class="figure">
+        <span class="figure-value" id="statUnits">0</span>
+        <span class="figure-label">Units in stock</span>
+      </div>
+      <div class="figure">
+        <span class="figure-value" id="statValue">0</span>
+        <span class="figure-label">Stock value</span>
+      </div>
+      <div class="figure figure-alert" id="lowFigure">
+        <span class="figure-value" id="statLow">0</span>
+        <span class="figure-label">Need restocking</span>
+      </div>
+    </section>
+
+    <div class="layout">
+      <section class="panel inventory" aria-labelledby="inv-title">
+        <div class="panel-head">
+          <h2 id="inv-title">Inventory</h2>
+          <div class="filters">
+            <label class="sr-only" for="search">Search items</label>
+            <input type="search" id="search" placeholder="Search name or SKU" autocomplete="off">
+            <label class="sr-only" for="categoryFilter">Filter by category</label>
+            <select id="categoryFilter">
+              <option value="">All categories</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col"><button class="sort" data-sort="name" type="button">Item</button></th>
+                <th scope="col"><button class="sort" data-sort="category" type="button">Category</button></th>
+                <th scope="col" class="num"><button class="sort" data-sort="price" type="button">Price</button></th>
+                <th scope="col" class="stock-col"><button class="sort" data-sort="quantity" type="button">Stock</button></th>
+                <th scope="col"><span class="sr-only">Actions</span></th>
+              </tr>
+            </thead>
+            <tbody id="rows"></tbody>
+          </table>
+        </div>
+        <p class="empty" id="empty" hidden></p>
+      </section>
+
+      <aside class="side">
+        <section class="panel" aria-labelledby="cat-title">
+          <h2 id="cat-title">Stock value by category</h2>
+          <div id="categoryBars" class="bars"></div>
+        </section>
+
+        <section class="panel" aria-labelledby="restock-title">
+          <h2 id="restock-title">Restock soon</h2>
+          <ul id="restockList" class="restock"></ul>
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <dialog id="itemDialog" aria-labelledby="dialogTitle">
+    <form id="itemForm" novalidate>
+      <h2 id="dialogTitle">Add item</h2>
+      <p class="form-error" id="formError" role="alert" hidden></p>
+
+      <div class="field">
+        <label for="f-name">Item name</label>
+        <input id="f-name" name="name" type="text" maxlength="120" required>
+        <p class="field-error" data-for="name"></p>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label for="f-sku">SKU</label>
+          <input id="f-sku" name="sku" type="text" maxlength="40" required>
+          <p class="field-error" data-for="sku"></p>
+        </div>
+        <div class="field">
+          <label for="f-category">Category</label>
+          <input id="f-category" name="category" type="text" maxlength="60" list="categoryList" required>
+          <datalist id="categoryList"></datalist>
+          <p class="field-error" data-for="category"></p>
+        </div>
+      </div>
+
+      <div class="row three">
+        <div class="field">
+          <label for="f-quantity">Quantity</label>
+          <input id="f-quantity" name="quantity" type="number" min="0" step="1" inputmode="numeric" required>
+          <p class="field-error" data-for="quantity"></p>
+        </div>
+        <div class="field">
+          <label for="f-reorder">Reorder level</label>
+          <input id="f-reorder" name="reorder_level" type="number" min="0" step="1" inputmode="numeric" required>
+          <p class="field-error" data-for="reorder_level"></p>
+        </div>
+        <div class="field">
+          <label for="f-price">Unit price</label>
+          <input id="f-price" name="price" type="number" min="0" step="0.01" inputmode="decimal" required>
+          <p class="field-error" data-for="price"></p>
+        </div>
+      </div>
+
+      <div class="dialog-actions">
+        <button class="btn" type="button" id="cancelBtn">Cancel</button>
+        <button class="btn btn-primary" type="submit" id="saveBtn">Save item</button>
+      </div>
+    </form>
+  </dialog>
+
+
+  <dialog id="deleteDialog" aria-labelledby="deleteTitle">
+    <form method="dialog" id="deleteForm">
+      <h2 id="deleteTitle">Delete this item?</h2>
+      <p id="deleteText"></p>
+      <div class="dialog-actions">
+        <button class="btn" value="cancel" type="submit">Keep item</button>
+        <button class="btn btn-danger" value="confirm" type="submit">Delete item</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

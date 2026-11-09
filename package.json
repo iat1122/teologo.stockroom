@@ -1,0 +1,17 @@
+{
+  "name": "stockroom-dashboard",
+  "version": "1.0.0",
+  "description": "Inventory dashboard with full CRUD. Express backend, SQLite database.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.5.0",
+    "express": "^4.21.1"
+  }
+}
